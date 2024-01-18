@@ -19,5 +19,17 @@ CHIP Memory {
     OUT out[16];
 
     PARTS:
-    //// Replace this comment with your code.
+    Not(in=address[14] ,out=not14 );
+    And(a=not14 ,b=load ,out=loadAndNot14);
+    RAM16K(in=in ,load=loadAndNot14 ,address=address[0..13] ,out=outRAM );
+
+    Not(in=address[13] ,out=not13 );
+    And(a=not13 ,b=address[14] ,out=Not13And14);
+    And(a=Not13And14 ,b=load ,out=loadAnd14AndNot13);
+    Screen(in=in ,load=loadAnd14AndNot13 ,address=address[0..12] ,out=outScreen );
+    
+    Keyboard(out=outKBD);
+    
+    Mux4Way16(a=outRAM ,b=outRAM ,c=outScreen ,d=outKBD ,sel=address[13..14] ,out=out );
+
 }
