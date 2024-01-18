@@ -11,4 +11,65 @@
 // 'white' in every pixel;
 // the screen should remain fully clear as long as no key is pressed.
 
-//// Replace this comment with your code.
+  (START)
+    // There are 8192 registers dealing with the screen
+    @8192
+    D=A
+    @numScreenRegistersToPaint
+    M=D
+
+    @SCREEN
+    D=A
+    @currentScreenRegister
+    M=D
+
+    @KBD
+    D=M
+
+    //set paint color
+    @SETWHITE
+    D; JEQ
+
+    @SETBLACK
+    0; JMP
+
+
+  (SETWHITE)
+    @color
+    M=0
+
+    @PAINT
+    0;JMP
+
+
+  (SETBLACK)
+    @color
+    M=-1
+
+    @PAINT
+    0;JMP
+
+  (PAINT)
+    
+    @color
+    D=M
+
+    @currentScreenRegister
+    A=M
+    M=D
+
+    @currentScreenRegister
+    M=M+1
+
+    @numScreenRegistersToPaint
+    M=M-1
+    D=M
+
+    // if numScreenRegistersToPaint is 0 => go to start program
+    @START
+    D; JEQ
+
+    // if numScreenRegistersToPaint is not 0, continue painting
+    @PAINT
+    0; JMP
+
